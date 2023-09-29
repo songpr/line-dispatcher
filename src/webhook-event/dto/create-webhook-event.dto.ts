@@ -1,27 +1,44 @@
-import { IsNotEmpty } from 'class-validator';
-export class CreateWebhookEventDto {
+import { ArrayNotEmpty, IsAlphanumeric, IsDefined, IsNotEmpty, IsOptional, Min, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class Source {
+  type: string;
   @IsNotEmpty()
-  destination: string;
-  events: Event[];
+  userId: string;
+  groupId: string;
+  roomId: string;
 }
 
-class Event {
+export class DeliveryContext {
+  isRedelivery: boolean;
+}
+
+export class LineEvent {
+  @IsNotEmpty()
   type: string;
+  @Min(1)
   timestamp: number;
+  @ValidateNested()
+  @IsOptional()
+  @Type(() => Source)
   source: Source;
   replyToken: string;
   mode: string;
+  @IsNotEmpty()
+  @IsAlphanumeric()
   webhookEventId: string;
+  @IsDefined()
   deliveryContext: DeliveryContext;
 }
 
-class Source {
-  type: string;
-  userId: string;
-}
-
-class DeliveryContext {
-  isRedelivery: boolean;
+export class CreateWebhookEventDto {
+  @IsNotEmpty()
+  @IsAlphanumeric()
+  destination: string;
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => LineEvent) //this is require to validate nested class
+  events: LineEvent[];
 }
 
 /* example of webhook event
