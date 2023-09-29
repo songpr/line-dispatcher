@@ -1,7 +1,7 @@
 import { ArrayNotEmpty, IsAlphanumeric, IsDefined, IsNotEmpty, IsOptional, Min, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class Source {
+class Source {
   type: string;
   @IsNotEmpty()
   userId: string;
@@ -9,11 +9,11 @@ export class Source {
   roomId: string;
 }
 
-export class DeliveryContext {
+class DeliveryContext {
   isRedelivery: boolean;
 }
 
-export class LineEvent {
+class LineEvent {
   @IsNotEmpty()
   type: string;
   @Min(1)

@@ -76,7 +76,7 @@ content-type: application/json
   ]
 }
 
-### error destination
+### error webhookEventId
 POST http://localhost:3000/webhook-event
 content-type: application/json
 
