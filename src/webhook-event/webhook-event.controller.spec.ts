@@ -22,7 +22,7 @@ describe('WebhookEventController', () => {
   describe('accept webhook event', () => {
     it('support create webhook event', () => {
       const createWebhookEventDto = new CreateWebhookEventDto();
-      expect(controller.create(createWebhookEventDto)).toBe('');
+      expect(controller.create(createWebhookEventDto)).toBe(null);
     });
   });
 });
