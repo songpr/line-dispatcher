@@ -5,7 +5,9 @@ class Source {
   type: string;
   @IsNotEmpty()
   userId: string;
+  @IsOptional()
   groupId: string;
+  @IsOptional()
   roomId: string;
 }
 
@@ -18,8 +20,8 @@ class LineEvent {
   type: string;
   @Min(1)
   timestamp: number;
-  @ValidateNested()
   @IsOptional()
+  @ValidateNested()
   @Type(() => Source)
   source: Source;
   replyToken: string;
