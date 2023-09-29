@@ -8,6 +8,7 @@ export class WebhookEventController {
 
   @Post()
   create(@Body() createWebhookEventDto: CreateWebhookEventDto) {
-    return this.webhookEventService.create(createWebhookEventDto);
+    this.webhookEventService.create(createWebhookEventDto);
+    return null; //return nothing as it is not defined in https://developers.line.biz/en/docs/messaging-api/receiving-messages/
   }
 }

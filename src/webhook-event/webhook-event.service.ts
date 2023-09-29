@@ -4,7 +4,7 @@ import { CreateWebhookEventDto } from './dto/create-webhook-event.dto';
 @Injectable()
 export class WebhookEventService {
   create(createWebhookEventDto: CreateWebhookEventDto) {
-    return `This action adds a new webhookEvent \n${createWebhookEventDto}`;
+    return createWebhookEventDto;
   }
 
   findAll() {
