@@ -15,7 +15,7 @@ class DeliveryContext {
   isRedelivery: boolean;
 }
 
-class LineEvent {
+export class LineEvent {
   @IsNotEmpty()
   type: string;
   @Min(1)
