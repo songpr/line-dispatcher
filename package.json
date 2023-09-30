@@ -1,10 +1,10 @@
 {
   "name": "line-dispatcher",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "line dispacther",
+  "author": "Pornchai R.",
   "private": true,
-  "license": "UNLICENSED",
+  "license" : "BSD-3-Clause",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
