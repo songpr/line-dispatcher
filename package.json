@@ -4,11 +4,13 @@
   "description": "line dispacther",
   "author": "Pornchai R.",
   "private": true,
-  "license" : "BSD-3-Clause",
+  "license": "BSD-3-Clause",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "start:c2": "pm2 start -i 2 nest -- start",
+    "start:c4": "pm2 start -i 4 nest -- start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -17,7 +19,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "loadtest": "artillery run ./loadtest/webhook-event.300.yml",
+    "loadtest:600": "artillery run ./loadtest/webhook-event.600.yml",
+    "loadtest:1000": "artillery run ./loadtest/webhook-event.1000.yml"
   },
   "dependencies": {
     "@fastify/static": "^6.11.2",
