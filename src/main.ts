@@ -6,6 +6,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule,
@@ -16,16 +17,17 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }))
 
   //open api
-  const config = new DocumentBuilder()
+  const swaggerConfig = new DocumentBuilder()
     .setTitle('Line Dispatcher')
     .setDescription('The Line Dispatcher API description')
     .setVersion('0.1')
     .addTag('line-dispatcher')
     .addTag('line-webhook')
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document);
+  const PORT = app.get(ConfigService).get<number>('PORT');
 
-  await app.listen(3000);
+  await app.listen(PORT);
 }
 bootstrap();
