@@ -19,6 +19,8 @@ scenarios:
   - flow:
       - post:
           url: "/webhook-event"
+          headers:
+            x-line-signature: 6buSbrlRRm9OseSr4we6MFiDvlvrbKIwIJz6hTtlLME=
           json:
             destination: xxxxxxxxxx
             events:
