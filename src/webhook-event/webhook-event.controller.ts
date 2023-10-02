@@ -1,7 +1,7 @@
 import { Controller, UseGuards, Post, Body, Logger } from '@nestjs/common';
 import { WebhookEventService } from './webhook-event.service';
 import { CreateWebhookEventDto } from './dto/create-webhook-event.dto';
-import { LineSignatureGuard } from 'src/auth/line-signature/line-signature.guard';
+import { LineSignatureGuard } from '../auth/line-signature/line-signature.guard';
 
 @Controller('webhook-event')
 @UseGuards(LineSignatureGuard)
