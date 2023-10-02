@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/commo
 import { Observable } from 'rxjs';
 import * as crypto from "crypto";
 import { ConfigService } from '@nestjs/config';
+import { FastifyRequest } from 'fastify';
 
 @Injectable()
 export class LineSignatureGuard implements CanActivate {
@@ -13,14 +14,12 @@ export class LineSignatureGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     //fastify request object
     const request = context.switchToHttp().getRequest();
-    const xLineSignature = request.headers['x-line-signature'];
+    const fastifyRequest = request as FastifyRequest;
+    const xLineSignature = fastifyRequest.headers['x-line-signature'];
     if (xLineSignature !== null && xLineSignature !== undefined) {
-      this.logger.debug("webhook-event:x-line-signature", xLineSignature)
-      const body = request.rawBody; // Request body string
-      this.logger.debug("webhook-event:rawBody", body)
       const signature = crypto
         .createHmac("SHA256", this.channelSecret)
-        .update(body)
+        .update(request.rawBody)
         .digest("base64");
       this.logger.debug("webhook-event:line-signature", signature)
       return xLineSignature === signature;
