@@ -10,6 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:.env": "set -a source .env set +a & nest start",
+    "start:.env-dev": "set -a source .env set +a & nest start --watch",
     "start:c2": "pm2 start -i 2 nest -- start",
     "start:c4": "pm2 start -i 4 nest -- start",
     "start:dev": "nest start --watch",

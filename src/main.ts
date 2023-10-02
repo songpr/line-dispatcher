@@ -9,13 +9,14 @@ import {
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
+  //see https://docs.nestjs.com/faq/raw-body
   const app = await NestFactory.create<NestFastifyApplication>(AppModule,
     new FastifyAdapter(),
     {
-      logger: ['error', 'warn', 'log'],
+      logger: ['error', 'warn', 'log', 'debug',],
+      rawBody: true,
     });
   app.useGlobalPipes(new ValidationPipe({ transform: true }))
-
   //open api
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Line Dispatcher')
