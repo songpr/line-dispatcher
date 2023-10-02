@@ -7,7 +7,6 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { ConfigService } from '@nestjs/config';
-import { log } from 'console';
 
 async function bootstrap() {
   //default log level is error, warn, log
