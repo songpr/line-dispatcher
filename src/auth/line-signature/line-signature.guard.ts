@@ -7,6 +7,7 @@ export class LineSignatureGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
+    //fastify request object
     const request = context.switchToHttp().getRequest();
     const xLineSignature = request.headers['x-line-signature'];
     if (xLineSignature !== null && xLineSignature !== undefined) {
