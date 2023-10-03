@@ -3,7 +3,7 @@ config:
   http:
     # Set a max of five TCP connections per virtual user.
     maxSockets: 5
-    pool: 200
+    pool: 500
   phases:
     - duration: 10
       arrivalRate: 10
