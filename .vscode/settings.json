@@ -1,0 +1,8 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/d93fb96a-a195-4ea7-9ba8-d29fc6e43003/resourceGroups/rg-wpp-wt-sea-th-tech-ppe/providers/Microsoft.Web/sites/apps-line-dispatcher-wpp-wt-sea-th-tech-ppe",
+    "appService.deploySubpath": ".",
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ]
+}
