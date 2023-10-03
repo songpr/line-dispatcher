@@ -1,12 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { LogLevel, ValidationPipe } from '@nestjs/common';
+import { LogLevel, ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { ConfigService } from '@nestjs/config';
+const logger = new Logger('main');
 
 async function bootstrap() {
   //default log level is error, warn, log
@@ -32,7 +33,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document);
   const PORT = app.get(ConfigService).get<number>('PORT') || 8080;
-  console.log(`PORT: ${PORT}`);
+  logger.log(`PORT: ${PORT}`);
   await app.listen(PORT);
 }
 bootstrap();
