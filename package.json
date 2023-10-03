@@ -8,7 +8,7 @@
   "scripts": {
     "build": "npm install -g @nestjs/cli && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "npm start",
+    "start": "nest start",
     "start:c2": "pm2 start -i 2 --max-memory-restart 500M nest -- start",
     "start:c4": "pm2 start -i 4 --max-memory-restart 500M nest -- start",
     "start:dev": "nest start --watch",
