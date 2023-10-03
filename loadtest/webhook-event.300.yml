@@ -1,8 +1,9 @@
 config:
-  target: http://localhost:3000
+  target: https://apps-line-dispatcher-wpp-wt-sea-th-tech-ppe.azurewebsites.net
   http:
     # Set a max of five TCP connections per virtual user.
     maxSockets: 5
+    pool: 200
   phases:
     - duration: 10
       arrivalRate: 10
