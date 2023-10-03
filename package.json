@@ -6,7 +6,7 @@
   "private": true,
   "license": "BSD-3-Clause",
   "scripts": {
-    "build": "nest build",
+    "build": "npm install -g @nestjs/cli && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:c2": "pm2 start -i 2 nest -- start",
