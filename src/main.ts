@@ -34,6 +34,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
   const PORT = app.get(ConfigService).get<number>('PORT') || 8080;
   logger.log(`PORT: ${PORT}`);
-  await app.listen(PORT);
+  //support listen on all ip, otherwise it will only listen on localhost which is not accessible from outside
+  await app.listen(PORT, '0.0.0.0')
 }
 bootstrap();
