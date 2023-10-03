@@ -32,9 +32,10 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document);
+  const HOST = '0.0.0.0'
   const PORT = app.get(ConfigService).get<number>('PORT') || 8080;
-  logger.log(`PORT: ${PORT}`);
+  logger.log(`listen on ${HOST}:${PORT}`);
   //support listen on all ip, otherwise it will only listen on localhost which is not accessible from outside
-  await app.listen(PORT, '0.0.0.0')
+  await app.listen(PORT, HOST)
 }
 bootstrap();
