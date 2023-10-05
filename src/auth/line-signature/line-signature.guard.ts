@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import * as crypto from "crypto";
+import { createHmac } from "node:crypto";
 import { ConfigService } from '@nestjs/config';
 import { FastifyRequest } from 'fastify';
 
@@ -17,8 +17,7 @@ export class LineSignatureGuard implements CanActivate {
     const fastifyRequest = request as FastifyRequest;
     const xLineSignature = fastifyRequest.headers['x-line-signature'];
     if (xLineSignature !== null && xLineSignature !== undefined) {
-      const signature = crypto
-        .createHmac("SHA256", this.channelSecret)
+      const signature = createHmac("SHA256", this.channelSecret)
         .update(request.rawBody)
         .digest("base64");
       this.logger.debug("webhook-event:line-signature", signature)
