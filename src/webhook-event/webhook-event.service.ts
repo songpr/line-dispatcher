@@ -1,17 +1,14 @@
+import { ReceiveWebhookEventCommand } from './commands/receive-webhook-event.command';
 import { Injectable } from '@nestjs/common';
 import { CreateWebhookEventDto } from './dto/create-webhook-event.dto';
+import { CommandBus } from '@nestjs/cqrs';
 
 @Injectable()
 export class WebhookEventService {
-  create(createWebhookEventDto: CreateWebhookEventDto) {
-    return createWebhookEventDto;
-  }
+  constructor(private readonly commandBus: CommandBus) {}
 
-  findAll() {
-    return `This action returns all webhookEvent`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} webhookEvent`;
+  async receiveWebhookEvent(createWebhookEventDto: CreateWebhookEventDto) {
+    const command = new ReceiveWebhookEventCommand(createWebhookEventDto);
+    return this.commandBus.execute(command);
   }
 }
