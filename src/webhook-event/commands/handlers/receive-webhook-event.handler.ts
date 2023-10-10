@@ -8,6 +8,6 @@ export class ReceiveWebhookEventCommandHandler
   private readonly logger = new Logger(ReceiveWebhookEventCommandHandler.name);
   constructor() { }
   async execute(command: ReceiveWebhookEventCommand) {
-    this.logger.debug(JSON.stringify(command.createWebhookEventDto));
+    this.logger.debug(command.rawWebhookEvent);
   }
 }

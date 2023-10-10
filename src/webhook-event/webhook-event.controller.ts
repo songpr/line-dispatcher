@@ -1,4 +1,5 @@
-import { Controller, UseGuards, Post, Body, Logger } from '@nestjs/common';
+import { Controller, UseGuards, Post, Body, Logger, Headers, RawBodyRequest, Req } from '@nestjs/common';
+import { FastifyRequest } from 'fastify';
 import { WebhookEventService } from './webhook-event.service';
 import { CreateWebhookEventDto } from './dto/create-webhook-event.dto';
 import { LineSignatureGuard } from '../auth/line-signature/line-signature.guard';
@@ -10,8 +11,8 @@ export class WebhookEventController {
   private readonly logger = new Logger(WebhookEventController.name);
 
   @Post()
-  create(@Body() createWebhookEventDto: CreateWebhookEventDto) {
-    this.webhookEventService.receiveWebhookEvent(createWebhookEventDto).catch((error) => {
+  create(@Body() createWebhookEventDto: CreateWebhookEventDto, @Headers('x-line-signature') xLineSignature: string, @Req() req: RawBodyRequest<FastifyRequest>) {
+    this.webhookEventService.receiveWebhookEvent(createWebhookEventDto, xLineSignature, req.rawBody.toString()).catch((error) => {
       this.logger.error({ error: error.stack, createWebhookEventDto: createWebhookEventDto });
     });
     this.logger.debug('return')
