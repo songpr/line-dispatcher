@@ -1,7 +1,7 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { ReceiveWebhookEventCommand } from '../receive-webhook-event.command';
 import { Logger } from '@nestjs/common';
-import { Dispatcher } from 'src/webhook-event/models/dispatcher.model';
+import { Dispatcher } from '../../models/dispatcher.model';
 
 @CommandHandler(ReceiveWebhookEventCommand)
 export class ReceiveWebhookEventCommandHandler

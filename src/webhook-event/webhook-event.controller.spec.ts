@@ -4,20 +4,31 @@ import { ReceiveWebhookEventCommandHandler } from './commands/handlers/receive-w
 import { WebhookEventController } from './webhook-event.controller';
 import { WebhookEventService } from './webhook-event.service';
 import { CreateWebhookEventDto } from './dto/create-webhook-event.dto';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FastifyRequest } from 'fastify';
 import { RawBodyRequest } from '@nestjs/common';
+import { ForwardWebhookEventCommandHandler } from './commands/handlers/forward-webhook-event.handler';
+import { Dispatcher } from './models/dispatcher.model';
 
 describe('WebhookEventController', () => {
   let controller: WebhookEventController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot(),
-        CqrsModule,],
+      imports: [ConfigModule, CqrsModule,],
       controllers: [WebhookEventController],
       providers: [WebhookEventService,
-        ReceiveWebhookEventCommandHandler,],
+        ReceiveWebhookEventCommandHandler,
+        ForwardWebhookEventCommandHandler,
+        {
+          provide: Dispatcher,
+          useFactory: (configService: ConfigService) => {
+            const destination = configService.get<string>('LINE_OA_ID');
+            return new Dispatcher(destination);
+          },
+          inject: [ConfigService],
+        },
+      ],
     }).compile();
 
     controller = module.get<WebhookEventController>(WebhookEventController);
@@ -30,7 +41,7 @@ describe('WebhookEventController', () => {
   describe('accept webhook event', () => {
     it('support create webhook event', () => {
       const createWebhookEventDto = new CreateWebhookEventDto();
-      expect(controller.create(createWebhookEventDto, '', { rawBody: '' } as unknown as RawBodyRequest<FastifyRequest>)).toBe('');
+      expect(controller.accept(createWebhookEventDto, '', { rawBody: '' } as unknown as RawBodyRequest<FastifyRequest>)).toBe('');
     });
   });
 });
