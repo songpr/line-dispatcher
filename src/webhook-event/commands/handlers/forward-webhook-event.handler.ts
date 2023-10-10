@@ -9,6 +9,6 @@ export class ForwardWebhookEventCommandHandler
 
   constructor() { }
   async execute(command: ForwardWebhookEventCommand) {
-    this.logger.log(`ForwardWebhookEventCommandHandler: ${command.lineSignature}`);
+    this.logger.debug(`ForwardWebhookEventCommandHandler: ${command.lineSignature}`);
   }
 }
