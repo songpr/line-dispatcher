@@ -24,6 +24,7 @@ export class WebhookEventController {
   }
 
   async receiveWebhookEvent(createWebhookEventDto: CreateWebhookEventDto, xLineSignature: string, rawWebhookEvent: string) {
+    delay(100);//delay 100ms to make sure the event is processed after the response is sent
     return this.webhookEventService.receiveWebhookEvent(createWebhookEventDto, xLineSignature, rawWebhookEvent);
   }
 }
