@@ -5,7 +5,7 @@ import { CommandBus } from '@nestjs/cqrs';
 
 @Injectable()
 export class WebhookEventService {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(private readonly commandBus: CommandBus) { }
 
   async receiveWebhookEvent(createWebhookEventDto: CreateWebhookEventDto) {
     const command = new ReceiveWebhookEventCommand(createWebhookEventDto);
