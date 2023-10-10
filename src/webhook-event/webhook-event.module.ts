@@ -5,12 +5,15 @@ import { WebhookEventService } from './webhook-event.service';
 import { WebhookEventController } from './webhook-event.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Dispatcher } from './models/dispatcher.model';
+import { ForwardWebhookEventCommandHandler } from './commands/handlers/forward-webhook-event.handler';
+import { DispatchersSagas } from './sagas/dispatchers.sagas';
 
 @Module({
   imports: [ConfigModule, CqrsModule,],
   controllers: [WebhookEventController],
   providers: [WebhookEventService,
     ReceiveWebhookEventCommandHandler,
+    ForwardWebhookEventCommandHandler,
     {
       provide: Dispatcher,
       useFactory: (configService: ConfigService) => {
@@ -19,6 +22,7 @@ import { Dispatcher } from './models/dispatcher.model';
       },
       inject: [ConfigService],
     },
+    DispatchersSagas,
   ],
 })
 export class WebhookEventModule { }
