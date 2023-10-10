@@ -11,8 +11,10 @@ export class WebhookEventController {
 
   @Post()
   create(@Body() createWebhookEventDto: CreateWebhookEventDto) {
-    this.logger.debug("createWebhookEventDto created", JSON.stringify(createWebhookEventDto))
-    this.webhookEventService.create(createWebhookEventDto);
+    this.webhookEventService.receiveWebhookEvent(createWebhookEventDto).catch((error) => {
+      this.logger.error({ error: error.stack, createWebhookEventDto: createWebhookEventDto });
+    });
+    //always return 201, so that LINE will not resend the same event
     return ''; //return nothing as it is not defined in https://developers.line.biz/en/docs/messaging-api/receiving-messages/
   }
 }
