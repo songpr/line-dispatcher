@@ -12,6 +12,5 @@ export class ReceiveWebhookEventCommandHandler
   async execute(command: ReceiveWebhookEventCommand) {
     this.publisher.mergeObjectContext(this.dispatcher);
     this.dispatcher.receivedWebhookEvents(command.xLineSignature, command.rawWebhookEvent);
-    this.logger.debug(command.rawWebhookEvent);
   }
 }
