@@ -1,6 +1,6 @@
 {
   "name": "line-dispatcher",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "line dispacther",
   "author": "Pornchai R.",
   "private": true,
@@ -21,7 +21,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "loadtest": "artillery run ./loadtest/webhook-event.300.yml",
+    "loadtest": "artillery run ./loadtest/webhook-event.yml",
+    "loadtest:300": "artillery run ./loadtest/webhook-event.300.yml",
     "loadtest:600": "artillery run ./loadtest/webhook-event.600.yml",
     "loadtest:1000": "artillery run ./loadtest/webhook-event.1000.yml"
   },
