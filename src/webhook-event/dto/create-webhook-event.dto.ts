@@ -34,6 +34,11 @@ export class LineEvent {
 }
 
 export class CreateWebhookEventDto {
+  constructor() {
+    this.receivedDatetime = new Date()
+  }
+
+  public readonly receivedDatetime: Date;
   @IsNotEmpty()
   @IsAlphanumeric()
   destination: string;

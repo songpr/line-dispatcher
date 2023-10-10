@@ -5,7 +5,7 @@ import { WebhookEventModule } from './webhook-event/webhook-event.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [WebhookEventModule, ConfigModule.forRoot(),],
+  imports: [ConfigModule.forRoot(), WebhookEventModule,],
   controllers: [AppController],
   providers: [AppService],
 })
