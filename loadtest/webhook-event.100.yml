@@ -1,0 +1,63 @@
+config:
+  target: https://apps-line-dispatcher-wpp-wt-sea-th-tech-ppe.azurewebsites.net
+  http:
+    # Set a max of five TCP connections per virtual user.
+    maxSockets: 5
+    pool: 100
+  phases:
+    - duration: 10
+      arrivalRate: 10
+      rampTo: 30
+      name: Warm up phase
+    - duration: 20
+      arrivalRate: 30
+      rampTo: 50
+      name: Ramp up load
+    - duration: 60
+      arrivalRate: 100
+      name: Spike phase
+  processor: "./custom100.js"
+
+scenarios:
+  - name : loadtest100user
+    # beforeScenario: generatePostBody
+    flow:
+      # - function: generateBodyFromFiles
+      # - function: "setCount"
+      - post:
+          url: "/webhook-event"
+          headers:
+            # content-type: application/json
+            Accept: "application/json"
+          beforeRequest: 
+            - setJSONBody
+            - setCustomHeader
+          #afterResponse: logResponse
+          #json: {{ requestBody }}
+          # body: |         
+          #     {
+          #       "destination": "6524fd397a7d129d0335b3f3",
+          #       "events": [
+          #         {
+          #           "type": "unfollow",
+          #           "webhookEventId": "6524fd3953eec238e27726b5",
+          #           "deliveryContext": {
+          #             "isRedelivery": false
+          #           },
+          #           "timestamp": 828814628614,
+          #           "source": {
+          #             "type": "user",
+          #             "userId": "U6524fd39e2c10fbea71c3b6e"
+          #           },
+          #           "replyToken": "6524fd39407cd2655a1031da",
+          #           "mode": "active"
+          #         }
+          #       ]
+          #     }
+            
+          
+
+          
+            
+            
+          
