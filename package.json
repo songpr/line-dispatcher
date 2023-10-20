@@ -24,7 +24,8 @@
     "loadtest": "artillery run ./loadtest/webhook-event.yml",
     "loadtest:300": "artillery run ./loadtest/webhook-event.300.yml",
     "loadtest:600": "artillery run ./loadtest/webhook-event.600.yml",
-    "loadtest:1000": "artillery run ./loadtest/webhook-event.1000.yml"
+    "loadtest:1000": "artillery run ./loadtest/webhook-event.1000.yml",
+    "prisma:migration": "npx prisma migrate dev --name init --schema=./prisma/schema.prisma"
   },
   "dependencies": {
     "@fastify/static": "^6.11.2",
