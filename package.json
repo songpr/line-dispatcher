@@ -6,7 +6,8 @@
   "private": true,
   "license": "BSD-3-Clause",
   "scripts": {
-    "build": "npm install -g @nestjs/cli && nest build",
+    "preinstall": "npm install -g @nestjs/cli && npm install prisma@5.4.2 --save-dev",
+    "build": "npx prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:c2": "pm2 start -i 2 --name line-dispacther --max-memory-restart 500M nest -- start",
@@ -25,7 +26,7 @@
     "loadtest:300": "artillery run ./loadtest/webhook-event.300.yml",
     "loadtest:600": "artillery run ./loadtest/webhook-event.600.yml",
     "loadtest:1000": "artillery run ./loadtest/webhook-event.1000.yml",
-    "prisma:migration": "npx prisma migrate dev --name init --schema=./prisma/schema.prisma"
+    "prisma:migrate": "npx prisma migrate dev --name init --schema=./prisma/schema.prisma"
   },
   "dependencies": {
     "@fastify/static": "^6.11.2",

@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Dispatcher } from './models/dispatcher.model';
 import { ForwardWebhookEventCommandHandler } from './commands/handlers/forward-webhook-event.handler';
 import { DispatchersSagas } from './sagas/dispatchers.sagas';
+import { PrismaService } from '../prisma.service';
 
 @Module({
   imports: [ConfigModule, CqrsModule,],
@@ -23,6 +24,7 @@ import { DispatchersSagas } from './sagas/dispatchers.sagas';
       inject: [ConfigService],
     },
     DispatchersSagas,
+    PrismaService,
   ],
 })
 export class WebhookEventModule { }
