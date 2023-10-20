@@ -11,22 +11,35 @@ datasource db {
 }
 
 model WebhookEvent {
-  id               String   @id
+  id               String                @id
   type             String
   mode             String
   timestamp        DateTime
   replyToken       String?
-  isRedelivery     Boolean? @default(false)
+  isRedelivery     Boolean?              @default(false)
   lineWebhookEvent String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @default(now())
+  lineWebhooks     lineWebhookDelivery[]
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @default(now())
 }
 
 model LineWebhook {
   destination    String
   lineWebhook    String
   xLineSignature String
-  createdAt      DateTime @default(now())
+  webhookEvents  lineWebhookDelivery[]
+  createdAt      DateTime              @default(now())
 
   @@id([xLineSignature, createdAt])
+}
+
+model lineWebhookDelivery {
+  WebhookEvent              WebhookEvent? @relation(fields: [webhookEventId], references: [id])
+  isRedelivery              Boolean?      @default(false)
+  webhookEventId            String
+  LineWebhook               LineWebhook?  @relation(fields: [lineWebhookXLineSignature, lineWebhookCreatedAt], references: [xLineSignature, createdAt])
+  lineWebhookXLineSignature String
+  lineWebhookCreatedAt      DateTime
+
+  @@id([webhookEventId, lineWebhookXLineSignature, lineWebhookCreatedAt])
 }
