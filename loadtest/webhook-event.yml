@@ -3,7 +3,7 @@ config:
   http:
     # Set a max of five TCP connections per virtual user.
     maxSockets: 5
-    pool: 500
+    pool: 100
   phases:
     - duration: 10
       arrivalRate: 10
@@ -16,6 +16,9 @@ config:
     - duration: 60
       arrivalRate: 100
       name: Spike phase
+  environments:
+    local:
+      target: "http://127.0.0.1:3000"
 scenarios:
   - flow:
       - post:
