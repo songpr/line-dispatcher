@@ -14,8 +14,9 @@ export class ReceiveWebhookEventCommandHandler
   async execute(command: ReceiveWebhookEventCommand) {
     this.publisher.mergeObjectContext(this.dispatcher);
     const webhook = JSON.parse(command.rawWebhookEvent);
-    const webhookEventCreatePromises = webhook.events.map(event => {
-      const webhookEvent = {
+    const webhookEvents: WebhookEvent[] = [];
+    for (const event of webhook.events) {
+      const webhookEventCreate = {
         id: event.webhookEventId,
         type: event.type,
         mode: event.mode,
@@ -26,19 +27,21 @@ export class ReceiveWebhookEventCommandHandler
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      return this.prisma.webhookEvent.upsert({
-        where: { id: webhookEvent.id },
-        //update only isRedelivery, lineWebhookEvent, updatedAt
-        update: { isRedelivery: webhookEvent.isRedelivery, lineWebhookEvent: webhookEvent.lineWebhookEvent, updatedAt: webhookEvent.updatedAt },
-        create: webhookEvent
+      const webhookEvent = await this.prisma.webhookEvent.upsert({
+        where: { id: webhookEventCreate.id },
+        //update only isRedelivery, lineWebhookEvent (json), updatedAt
+        update: { isRedelivery: webhookEventCreate.isRedelivery, lineWebhookEvent: webhookEventCreate.lineWebhookEvent, updatedAt: webhookEventCreate.updatedAt },
+        create: webhookEventCreate
       })
-    });
-    const webhookEvents = await Promise.all(webhookEventCreatePromises) as WebhookEvent[];
+      webhookEvents.push(webhookEvent);
+    }
+    this.logger.debug(`webhookEvents: ${JSON.stringify(webhookEvents)}`);
     const data: Prisma.LineWebhookCreateInput = {
       destination: webhook.destination,
       lineWebhook: command.rawWebhookEvent,
       xLineSignature: command.xLineSignature,
       createdAt: new Date(),
+      //this is lineWebhookDelivery mapping between webhookEvent and lineWebhooks not line webhookEvents
       webhookEvents: {
         create: webhookEvents.map(event => {
           return {
