@@ -7,14 +7,14 @@ config:
   phases:
     - duration: 10
       arrivalRate: 10
-      rampTo: 40
+      rampTo: 20
       name: Warm up phase
     - duration: 20
-      arrivalRate: 50
-      rampTo: 100
+      arrivalRate: 20
+      rampTo: 50
       name: Ramp up load
     - duration: 60
-      arrivalRate: 100
+      arrivalRate: 50
       name: Spike phase
   environments:
     local:
