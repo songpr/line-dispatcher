@@ -38,7 +38,6 @@ export class ReceiveWebhookEventCommandHandler
     this.logger.debug(`webhookEvents: ${JSON.stringify(webhookEvents)}`);
     const data: Prisma.LineWebhookCreateInput = {
       destination: webhook.destination,
-      lineWebhook: command.rawWebhookEvent,
       xLineSignature: command.xLineSignature,
       createdAt: new Date(),
       //this is lineWebhookDelivery mapping between webhookEvent and lineWebhooks not line webhookEvents

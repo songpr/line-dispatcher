@@ -18,7 +18,7 @@ model WebhookEvent {
   timestamp        DateTime
   replyToken       String?
   isRedelivery     Boolean?              @default(false)
-  lineWebhookEvent Json
+  lineWebhookEvent Json                  @default("{}")
   lineWebhooks     lineWebhookDelivery[]
   createdAt        DateTime              @default(now())
   updatedAt        DateTime              @default(now())
@@ -26,7 +26,6 @@ model WebhookEvent {
 
 model LineWebhook {
   destination    String
-  lineWebhook    Json
   xLineSignature String
   webhookEvents  lineWebhookDelivery[]
   createdAt      DateTime              @default(now())
