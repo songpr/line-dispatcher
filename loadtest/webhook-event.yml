@@ -1,5 +1,5 @@
 config:
-  target: https://apps-line-dispatcher-wpp-wt-sea-th-tech-ppe.azurewebsites.net
+  target: http://127.0.0.1:3000
   http:
     # Set a max of five TCP connections per virtual user.
     maxSockets: 5
@@ -16,11 +16,65 @@ config:
     - duration: 60
       arrivalRate: 100
       name: Spike phase
+  payload:
+      path: "lineWebhook.testdata.100000.csv"
+      fields:
+        - "webhookEventId"
+        - "userId"
+        - "timestamp"
+        - "replyToken"
+        - "message.id"
+        - "message.text"
+        - "webhookEventId2"
+        - "userId2"
+        - "timestamp2"
+        - "replyToken2"
+        - "message2.id"
+        - "message2.text"
+      order: sequence
+      skipHeader: true
   environments:
-    local:
-      target: "http://127.0.0.1:3000"
+    small:
+      target: http://127.0.0.1:3000
+    phases:
+    - duration: 2
+      arrivalRate: 2
+      name: small load
+
 scenarios:
-  - flow:
+  - name: "follow event"
+    weight: 16
+    flow:
+      - post:
+          url: "/webhook-event"
+          headers:
+            x-line-signature: 6buSbrlRRm9OseSr4we6MFiDvlvrbKIwIJz6hTtlLME=
+          json:
+            destination: xxxxxxxxxx
+            events:
+            - type: follow
+              timestamp: {{timestamp}}
+              source:
+                type: user
+                userId: {{userId}}
+              replyToken: {{replyToken}}
+              mode: active
+              webhookEventId: {{webhookEventId}}
+              deliveryContext:
+                isRedelivery: false
+            - type: follow
+              timestamp: {{timestamp2}}
+              source:
+                type: user
+                userId: {{userId2}}
+              replyToken: {{replyToken2}}
+              mode: active
+              webhookEventId: {{webhookEventId2}}
+              deliveryContext:
+                isRedelivery: false
+  - name: "message event"
+    weight: 76
+    flow:
       - post:
           url: "/webhook-event"
           headers:
@@ -31,33 +85,47 @@ scenarios:
             - type: message
               message:
                 type: text
-                id: '14353798921116'
-                text: Hello, world
-              timestamp: 1625665242211
+                id: {{message.id}}
+                text: {{message.text}}
+              timestamp: {{timestamp}}
               source:
                 type: user
-                userId: U80696558e1aa831...
-              replyToken: 757913772c4646b784d4b7ce46d12671
+                userId: {{userId}}
+              replyToken: {{replyToken}}
               mode: active
-              webhookEventId: 01FZ74A0TDDPYRVKNK77XKC3ZR
+              webhookEventId: {{webhookEventId}}
               deliveryContext:
                 isRedelivery: false
-            - type: follow
-              timestamp: 1625665242214
+            - type: message
+              message:
+                type: text
+                id: {{message2.id}}
+                text: {{message2.text}}
+              timestamp: {{timestamp2}}
               source:
                 type: user
-                userId: Ufc729a925b3abef...
-              replyToken: bb173f4d9cf64aed9d408ab4e36339ad
+                userId: {{userId2}}
+              replyToken: {{replyToken}}
               mode: active
-              webhookEventId: 01FZ74ASS536FW97EX38NKCZQK
+              webhookEventId: {{webhookEventId2}}
               deliveryContext:
                 isRedelivery: false
+  - name: "unfollow event"
+    weight: 8
+    flow:
+      - post:
+          url: "/webhook-event"
+          headers:
+            x-line-signature: 6buSbrlRRm9OseSr4we6MFiDvlvrbKIwIJz6hTtlLME=
+          json:
+            destination: xxxxxxxxxx
+            events:
             - type: unfollow
-              timestamp: 1625665242215
+              timestamp: {{timestamp}}
               source:
                 type: user
-                userId: Ubbd4f124aee5113...
+                userId: {{userId}}
               mode: active
-              webhookEventId: 01FZ74B5Y0F4TNKA5SCAVKPEDM
+              webhookEventId: {{webhookEventId}}
               deliveryContext:
                 isRedelivery: false
