@@ -20,6 +20,8 @@ async function bootstrap() {
     ]),
   ] as LogLevel[];
 
+  logger.log(`log level: ${logLevel}`);
+
   //see https://docs.nestjs.com/faq/raw-body
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,

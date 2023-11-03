@@ -1,17 +1,21 @@
 import Job from 'node-interval-job';
-
+// Define your job here
 import { ReceiveWebhookEventCommand } from '../commands/receive-webhook-event.command';
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../../prisma.service';
 import { WebhookEvent, Prisma } from '@prisma/client';
 
+const logger = new Logger('PersistReceiveWebhookEventCommandJob:jobHandle');
 const jobHandle = async (
   receiveWebhookEventCommands: ReceiveWebhookEventCommand[],
+  job: PersistReceiveWebhookEventCommandJob,
 ) => {
+  logger.log(`job: ${job.name}`);
   for (const command of receiveWebhookEventCommands) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const job: PersistReceiveWebhookEventCommandJob = this; // ReceiveWebhookEventCommandJob have been binded to jobHandle this
+    job.log.debug(
+      `command.signature: ${JSON.stringify(command.xLineSignature)}`,
+    );
     const webhook = JSON.parse(command.rawWebhookEvent);
     const webhookEvents: WebhookEvent[] = [];
     for (const event of webhook.events) {
@@ -38,7 +42,7 @@ const jobHandle = async (
       });
       webhookEvents.push(webhookEvent);
     }
-    job.logger.debug(`webhookEvents: ${JSON.stringify(webhookEvents)}`);
+    job.log.debug(`webhookEvents: ${JSON.stringify(webhookEvents)}`);
     const data: Prisma.LineWebhookCreateInput = {
       destination: webhook.destination,
       xLineSignature: command.xLineSignature,
@@ -55,13 +59,17 @@ const jobHandle = async (
     };
     await job.prisma.lineWebhook.create({ data });
   }
-  return null;
 };
-export class PersistReceiveWebhookEventCommandJob extends Job<ReceiveWebhookEventCommand> {
+
+@Injectable()
+export class PersistReceiveWebhookEventCommandJob extends Job<
+  ReceiveWebhookEventCommand,
+  Logger
+> {
   readonly logger = new Logger(PersistReceiveWebhookEventCommandJob.name);
 
   constructor(
-    readonly configService: ConfigService,
+    configService: ConfigService,
     readonly prisma: PrismaService,
   ) {
     const logger = new Logger(PersistReceiveWebhookEventCommandJob.name);
@@ -80,7 +88,7 @@ export class PersistReceiveWebhookEventCommandJob extends Job<ReceiveWebhookEven
       name: PersistReceiveWebhookEventCommandJob.name,
       log: logger,
     });
-    jobHandle.bind(this); //bind this job to jobHandle
+    this.logger.log(`job: ${this.name}`);
   }
 
   addData(ReceiveWebhookEventCommand: ReceiveWebhookEventCommand) {
