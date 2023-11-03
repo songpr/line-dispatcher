@@ -1,4 +1,12 @@
-import { ArrayNotEmpty, IsAlphanumeric, IsDefined, IsNotEmpty, IsOptional, Min, ValidateNested } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsAlphanumeric,
+  IsDefined,
+  IsNotEmpty,
+  IsOptional,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 class Source {
@@ -35,7 +43,7 @@ export class LineEvent {
 
 export class CreateWebhookEventDto {
   constructor() {
-    this.receivedDatetime = new Date()
+    this.receivedDatetime = new Date();
   }
 
   public readonly receivedDatetime: Date;

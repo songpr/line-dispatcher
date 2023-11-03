@@ -1,4 +1,13 @@
-import { Controller, UseGuards, Post, Body, Logger, Headers, RawBodyRequest, Req } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Post,
+  Body,
+  Logger,
+  Headers,
+  RawBodyRequest,
+  Req,
+} from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { WebhookEventService } from './webhook-event.service';
 import { CreateWebhookEventDto } from './dto/create-webhook-event.dto';
@@ -9,22 +18,40 @@ function delay(ms: number) {
 @Controller('webhook-event')
 @UseGuards(LineSignatureGuard)
 export class WebhookEventController {
-  constructor(private readonly webhookEventService: WebhookEventService) { }
+  constructor(private readonly webhookEventService: WebhookEventService) {}
   private readonly logger = new Logger(WebhookEventController.name);
 
-
   @Post()
-  accept(@Body() createWebhookEventDto: CreateWebhookEventDto, @Headers('x-line-signature') xLineSignature: string, @Req() req: RawBodyRequest<FastifyRequest>) {
-    this.receiveWebhookEvent(createWebhookEventDto, xLineSignature, req.rawBody.toString()).catch((error) => {
-      this.logger.error({ error: error.stack, createWebhookEventDto: createWebhookEventDto });
+  accept(
+    @Body() createWebhookEventDto: CreateWebhookEventDto,
+    @Headers('x-line-signature') xLineSignature: string,
+    @Req() req: RawBodyRequest<FastifyRequest>,
+  ) {
+    this.receiveWebhookEvent(
+      createWebhookEventDto,
+      xLineSignature,
+      req.rawBody.toString(),
+    ).catch((error) => {
+      this.logger.error({
+        error: error.stack,
+        createWebhookEventDto: createWebhookEventDto,
+      });
     });
-    this.logger.debug('return')
+    this.logger.debug('return');
     //always return 201, so that LINE will not resend the same event
     return ''; //return nothing as it is not defined in https://developers.line.biz/en/docs/messaging-api/receiving-messages/
   }
 
-  async receiveWebhookEvent(createWebhookEventDto: CreateWebhookEventDto, xLineSignature: string, rawWebhookEvent: string) {
-    delay(100);//delay 100ms to make sure the event is processed after the response is sent
-    return this.webhookEventService.receiveWebhookEvent(createWebhookEventDto, xLineSignature, rawWebhookEvent);
+  async receiveWebhookEvent(
+    createWebhookEventDto: CreateWebhookEventDto,
+    xLineSignature: string,
+    rawWebhookEvent: string,
+  ) {
+    delay(100); //delay 100ms to make sure the event is processed after the response is sent
+    return this.webhookEventService.receiveWebhookEvent(
+      createWebhookEventDto,
+      xLineSignature,
+      rawWebhookEvent,
+    );
   }
 }

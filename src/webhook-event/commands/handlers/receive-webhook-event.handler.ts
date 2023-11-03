@@ -3,54 +3,45 @@ import { ReceiveWebhookEventCommand } from '../receive-webhook-event.command';
 import { Logger } from '@nestjs/common';
 import { Dispatcher } from '../../models/dispatcher.model';
 import { PrismaService } from '../../../prisma.service';
-import { WebhookEvent, Prisma } from '@prisma/client';
+
+import { LineEvent } from '../../dto/create-webhook-event.dto';
+
+import { LRUCache } from 'lru-cache';
+import { ConfigService } from '@nestjs/config';
 
 @CommandHandler(ReceiveWebhookEventCommand)
 export class ReceiveWebhookEventCommandHandler
-  implements ICommandHandler<ReceiveWebhookEventCommand> {
+  implements ICommandHandler<ReceiveWebhookEventCommand>
+{
   private readonly logger = new Logger(ReceiveWebhookEventCommandHandler.name);
-
-  constructor(private publisher: EventPublisher, private readonly dispatcher: Dispatcher, private readonly prisma: PrismaService) { }
+  private readonly cache: LRUCache<string, LineEvent>;
+  constructor(
+    private publisher: EventPublisher,
+    private readonly dispatcher: Dispatcher,
+    private readonly prisma: PrismaService,
+    configService: ConfigService,
+  ) {
+    const cacheOptions = {
+      max: configService.get<number>(
+        'RECEIVE_LINE_WEBHOOK_EVENT_JOB_CACHE_MAX',
+        100000,
+      ),
+      maxSize: configService.get<number>(
+        'RECEIVE_LINE_WEBHOOK_EVENT_JOB_CACHE_MAXSIZE',
+        500000,
+      ),
+      ttl: configService.get<number>(
+        'RECEIVE_LINE_WEBHOOK_EVENT_JOB_CACHE_TTL',
+        12 * 60 * 60 * 1000,
+      ), //default 12 hours
+    };
+    this.cache = new LRUCache<string, LineEvent>(cacheOptions);
+  }
   async execute(command: ReceiveWebhookEventCommand) {
     this.publisher.mergeObjectContext(this.dispatcher);
-    const webhook = JSON.parse(command.rawWebhookEvent);
-    const webhookEvents: WebhookEvent[] = [];
-    for (const event of webhook.events) {
-      const webhookEventCreate = {
-        id: event.webhookEventId,
-        type: event.type,
-        mode: event.mode,
-        timestamp: new Date(event.timestamp),
-        replyToken: event.replyToken,
-        isRedelivery: event.deliveryContext.isRedelivery,
-        lineWebhookEvent: JSON.stringify(event),
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      const webhookEvent = await this.prisma.webhookEvent.upsert({
-        where: { id: webhookEventCreate.id },
-        //update only isRedelivery, lineWebhookEvent (json), updatedAt
-        update: { isRedelivery: webhookEventCreate.isRedelivery, lineWebhookEvent: webhookEventCreate.lineWebhookEvent, updatedAt: webhookEventCreate.updatedAt },
-        create: webhookEventCreate
-      })
-      webhookEvents.push(webhookEvent);
-    }
-    this.logger.debug(`webhookEvents: ${JSON.stringify(webhookEvents)}`);
-    const data: Prisma.LineWebhookCreateInput = {
-      destination: webhook.destination,
-      xLineSignature: command.xLineSignature,
-      createdAt: new Date(),
-      //this is lineWebhookDelivery mapping between webhookEvent and lineWebhooks not line webhookEvents
-      webhookEvents: {
-        create: webhookEvents.map(event => {
-          return {
-            isRedelivery: event.isRedelivery,
-            webhookEventId: event.id
-          };
-        })
-      }
-    };
-    await this.prisma.lineWebhook.create({ data });
-    this.dispatcher.receivedWebhookEvents(command.xLineSignature, command.rawWebhookEvent);
+    this.dispatcher.receivedWebhookEvents(
+      command.xLineSignature,
+      command.rawWebhookEvent,
+    );
   }
 }

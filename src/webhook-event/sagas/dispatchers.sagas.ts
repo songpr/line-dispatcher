@@ -9,13 +9,15 @@ import { ForwardWebhookEventCommand } from '../commands/forward-webhook-event.co
 export class DispatchersSagas {
   @Saga()
   ReceivedWebhookEvent = (events$: Observable<any>): Observable<ICommand> => {
-    return events$
-      .pipe(
-        ofType(ReceivedWebhookEvent),
-        delay(100),
-        map(event => {
-          return new ForwardWebhookEventCommand(event.lineSignature, event.rawWebhookEvent);
-        }),
-      );
-  }
+    return events$.pipe(
+      ofType(ReceivedWebhookEvent),
+      delay(100),
+      map((event) => {
+        return new ForwardWebhookEventCommand(
+          event.lineSignature,
+          event.rawWebhookEvent,
+        );
+      }),
+    );
+  };
 }

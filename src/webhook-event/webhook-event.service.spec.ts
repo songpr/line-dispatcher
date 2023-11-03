@@ -10,8 +10,9 @@ describe('WebhookEventService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule, CqrsModule,],
-      providers: [WebhookEventService,
+      imports: [ConfigModule, CqrsModule],
+      providers: [
+        WebhookEventService,
         ReceiveWebhookEventCommandHandler,
         {
           provide: Dispatcher,
@@ -20,7 +21,8 @@ describe('WebhookEventService', () => {
             return new Dispatcher(destination);
           },
           inject: [ConfigService],
-        },],
+        },
+      ],
     }).compile();
 
     service = module.get<WebhookEventService>(WebhookEventService);

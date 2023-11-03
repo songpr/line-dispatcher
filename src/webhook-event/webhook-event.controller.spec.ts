@@ -15,9 +15,10 @@ describe('WebhookEventController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule, CqrsModule,],
+      imports: [ConfigModule, CqrsModule],
       controllers: [WebhookEventController],
-      providers: [WebhookEventService,
+      providers: [
+        WebhookEventService,
         ReceiveWebhookEventCommandHandler,
         ForwardWebhookEventCommandHandler,
         {
@@ -41,8 +42,11 @@ describe('WebhookEventController', () => {
   describe('accept webhook event', () => {
     it('support create webhook event', () => {
       const createWebhookEventDto = new CreateWebhookEventDto();
-      expect(controller.accept(createWebhookEventDto, '', { rawBody: '' } as unknown as RawBodyRequest<FastifyRequest>)).toBe('');
+      expect(
+        controller.accept(createWebhookEventDto, '', {
+          rawBody: '',
+        } as unknown as RawBodyRequest<FastifyRequest>),
+      ).toBe('');
     });
   });
 });
-

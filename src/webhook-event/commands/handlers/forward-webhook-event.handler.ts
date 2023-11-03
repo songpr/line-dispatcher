@@ -1,14 +1,17 @@
-import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { ForwardWebhookEventCommand } from '../forward-webhook-event.command';
 
 @CommandHandler(ForwardWebhookEventCommand)
 export class ForwardWebhookEventCommandHandler
-  implements ICommandHandler<ForwardWebhookEventCommand> {
+  implements ICommandHandler<ForwardWebhookEventCommand>
+{
   private readonly logger = new Logger(ForwardWebhookEventCommandHandler.name);
 
-  constructor() { }
+  constructor() {}
   async execute(command: ForwardWebhookEventCommand) {
-    this.logger.debug(`ForwardWebhookEventCommandHandler: ${command.lineSignature}`);
+    this.logger.debug(
+      `ForwardWebhookEventCommandHandler: ${command.lineSignature}`,
+    );
   }
 }

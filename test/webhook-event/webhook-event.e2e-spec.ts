@@ -14,9 +14,12 @@ describe('WebhookEventController (e2e)', () => {
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter(), {
-      rawBody: true,
-    });
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(
+      new FastifyAdapter(),
+      {
+        rawBody: true,
+      },
+    );
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
   });
