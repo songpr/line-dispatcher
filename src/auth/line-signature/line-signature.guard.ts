@@ -27,6 +27,7 @@ export class LineSignatureGuard implements CanActivate {
       const signature = createHmac('SHA256', this.channelSecret)
         .update(request.rawBody)
         .digest('base64');
+      this.logger.debug('webhook-event:body', request.rawBody);
       this.logger.debug('webhook-event:line-signature', signature);
       return xLineSignature === signature;
     }

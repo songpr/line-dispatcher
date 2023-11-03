@@ -9,38 +9,47 @@ config:
       arrivalRate: 10
       rampTo: 20
       name: Warm up phase
-    - duration: 20
-      arrivalRate: 20
-      rampTo: 80
-      name: Ramp up load
-    - duration: 60
-      arrivalRate: 100
-      name: Spike phase
   payload:
-      path: "lineWebhook.testdata.100000.csv"
-      fields:
-        - "webhookEventId"
-        - "userId"
-        - "timestamp"
-        - "replyToken"
-        - "message.id"
-        - "message.text"
-        - "webhookEventId2"
-        - "userId2"
-        - "timestamp2"
-        - "replyToken2"
-        - "message2.id"
-        - "message2.text"
-      order: sequence
-      skipHeader: true
+    path: "lineWebhook.testdata.100000.csv"
+    fields:
+      - "webhookEventId"
+      - "userId"
+      - "timestamp"
+      - "replyToken"
+      - "message.id"
+      - "message.text"
+      - "webhookEventId2"
+      - "userId2"
+      - "timestamp2"
+      - "replyToken2"
+      - "message2.id"
+      - "message2.text"
+    order: sequence
+    skipHeader: true
   environments:
     small:
       target: http://127.0.0.1:3000
-    phases:
-    - duration: 2
-      arrivalRate: 2
-      name: small load
-
+      phases:
+        - duration: 2
+          arrivalRate: 2
+          name: small load
+      payload:
+        path: "lineWebhook.testdata.10.csv"
+        fields:
+          - "webhookEventId"
+          - "userId"
+          - "timestamp"
+          - "replyToken"
+          - "message.id"
+          - "message.text"
+          - "webhookEventId2"
+          - "userId2"
+          - "timestamp2"
+          - "replyToken2"
+          - "message2.id"
+          - "message2.text"
+        order: sequence
+        skipHeader: true
 scenarios:
   - name: "follow event"
     weight: 16
@@ -53,23 +62,23 @@ scenarios:
             destination: xxxxxxxxxx
             events:
             - type: follow
-              timestamp: {{timestamp}}
+              timestamp: "{{timestamp}}"
               source:
                 type: user
-                userId: {{userId}}
-              replyToken: {{replyToken}}
+                userId: "{{userId}}"
+              replyToken: "{{replyToken}}"
               mode: active
-              webhookEventId: {{webhookEventId}}
+              webhookEventId: "{{webhookEventId}}"
               deliveryContext:
                 isRedelivery: false
             - type: follow
-              timestamp: {{timestamp2}}
+              timestamp: "{{timestamp2}}"
               source:
                 type: user
-                userId: {{userId2}}
-              replyToken: {{replyToken2}}
+                userId: "{{userId2}}"
+              replyToken: "{{replyToken2}}"
               mode: active
-              webhookEventId: {{webhookEventId2}}
+              webhookEventId: "{{webhookEventId2}}"
               deliveryContext:
                 isRedelivery: false
   - name: "message event"
@@ -85,29 +94,29 @@ scenarios:
             - type: message
               message:
                 type: text
-                id: {{message.id}}
-                text: {{message.text}}
-              timestamp: {{timestamp}}
+                id: "{{message.id}}"
+                text: "{{message.text}}"
+              timestamp: "{{timestamp}}"
               source:
                 type: user
-                userId: {{userId}}
-              replyToken: {{replyToken}}
+                userId: "{{userId}}"
+              replyToken: "{{replyToken}}"
               mode: active
-              webhookEventId: {{webhookEventId}}
+              webhookEventId: "{{webhookEventId}}"
               deliveryContext:
                 isRedelivery: false
             - type: message
               message:
                 type: text
-                id: {{message2.id}}
-                text: {{message2.text}}
-              timestamp: {{timestamp2}}
+                id: "{{message2.id}}"
+                text: "{{message2.text}}"
+              timestamp: "{{timestamp2}}"
               source:
                 type: user
-                userId: {{userId2}}
-              replyToken: {{replyToken}}
+                userId: "{{userId2}}"
+              replyToken: "{{replyToken}}"
               mode: active
-              webhookEventId: {{webhookEventId2}}
+              webhookEventId: "{{webhookEventId2}}"
               deliveryContext:
                 isRedelivery: false
   - name: "unfollow event"
@@ -121,11 +130,11 @@ scenarios:
             destination: xxxxxxxxxx
             events:
             - type: unfollow
-              timestamp: {{timestamp}}
+              timestamp: "{{timestamp}}"
               source:
                 type: user
-                userId: {{userId}}
+                userId: "{{userId}}"
               mode: active
-              webhookEventId: {{webhookEventId}}
+              webhookEventId: "{{webhookEventId}}"
               deliveryContext:
                 isRedelivery: false
