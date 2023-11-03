@@ -3,11 +3,10 @@ import { ReceiveWebhookEventCommand } from '../receive-webhook-event.command';
 import { Logger } from '@nestjs/common';
 import { Dispatcher } from '../../models/dispatcher.model';
 import { PrismaService } from '../../../prisma.service';
-
 import { LineEvent } from '../../dto/create-webhook-event.dto';
-
 import { LRUCache } from 'lru-cache';
 import { ConfigService } from '@nestjs/config';
+import { PersistReceiveWebhookEventCommandJob } from 'src/webhook-event/job/receive-webhook-event-command.job';
 
 @CommandHandler(ReceiveWebhookEventCommand)
 export class ReceiveWebhookEventCommandHandler
@@ -19,6 +18,7 @@ export class ReceiveWebhookEventCommandHandler
     private publisher: EventPublisher,
     private readonly dispatcher: Dispatcher,
     private readonly prisma: PrismaService,
+    private readonly job: PersistReceiveWebhookEventCommandJob,
     configService: ConfigService,
   ) {
     const cacheOptions = {
@@ -39,6 +39,7 @@ export class ReceiveWebhookEventCommandHandler
   }
   async execute(command: ReceiveWebhookEventCommand) {
     this.publisher.mergeObjectContext(this.dispatcher);
+    this.job.addData(command); //add data to job for persisting
     this.dispatcher.receivedWebhookEvents(
       command.xLineSignature,
       command.rawWebhookEvent,

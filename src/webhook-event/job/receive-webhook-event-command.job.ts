@@ -11,7 +11,7 @@ const jobHandle = async (
 ) => {
   for (const command of receiveWebhookEventCommands) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const job: ReceiveWebhookEventCommandJob = this; // ReceiveWebhookEventCommandJob have been binded to jobHandle this
+    const job: PersistReceiveWebhookEventCommandJob = this; // ReceiveWebhookEventCommandJob have been binded to jobHandle this
     const webhook = JSON.parse(command.rawWebhookEvent);
     const webhookEvents: WebhookEvent[] = [];
     for (const event of webhook.events) {
@@ -57,14 +57,14 @@ const jobHandle = async (
   }
   return null;
 };
-export class ReceiveWebhookEventCommandJob extends Job<ReceiveWebhookEventCommand> {
-  readonly logger = new Logger(ReceiveWebhookEventCommandJob.name);
+export class PersistReceiveWebhookEventCommandJob extends Job<ReceiveWebhookEventCommand> {
+  readonly logger = new Logger(PersistReceiveWebhookEventCommandJob.name);
 
   constructor(
     readonly configService: ConfigService,
     readonly prisma: PrismaService,
   ) {
-    const logger = new Logger(ReceiveWebhookEventCommandJob.name);
+    const logger = new Logger(PersistReceiveWebhookEventCommandJob.name);
     const interval = configService.get<number>(
       'RECEIVE_LINE_WEBHOOK_EVENT_JOB_INTERVAL',
       500,
@@ -77,7 +77,7 @@ export class ReceiveWebhookEventCommandJob extends Job<ReceiveWebhookEventComman
       interval,
       max,
       jobHandle,
-      name: ReceiveWebhookEventCommandJob.name,
+      name: PersistReceiveWebhookEventCommandJob.name,
       log: logger,
     });
     jobHandle.bind(this); //bind this job to jobHandle

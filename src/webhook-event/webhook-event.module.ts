@@ -8,7 +8,7 @@ import { Dispatcher } from './models/dispatcher.model';
 import { ForwardWebhookEventCommandHandler } from './commands/handlers/forward-webhook-event.handler';
 import { DispatchersSagas } from './sagas/dispatchers.sagas';
 import { PrismaService } from '../prisma.service';
-import { ReceiveWebhookEventCommandJob } from './job/receive-webhook-event-command.job';
+import { PersistReceiveWebhookEventCommandJob } from './job/receive-webhook-event-command.job';
 
 @Module({
   imports: [ConfigModule, CqrsModule],
@@ -27,7 +27,7 @@ import { ReceiveWebhookEventCommandJob } from './job/receive-webhook-event-comma
     },
     DispatchersSagas,
     PrismaService,
-    ReceiveWebhookEventCommandJob,
+    PersistReceiveWebhookEventCommandJob,
   ],
 })
 export class WebhookEventModule {}
